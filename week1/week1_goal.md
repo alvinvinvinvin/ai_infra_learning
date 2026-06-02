@@ -6,8 +6,8 @@ Week 1: Environment Setup and Initial Run
 
 ## Weekly Tasks:
 
-- [ ] Install a Python virtual environment, vLLM, and the Hugging Face CLI.
+✅ Install a Python virtual environment, vLLM, and the Hugging Face CLI.
 
-- [ ] Download a small model (e.g., Llama 2 7B or Qwen 2 1.5B) to avoid running out of GPU memory.
+✅ Download a small model (e.g., Llama 2 7B or Qwen 2 1.5B) to avoid running out of GPU memory.
 
-- [ ] Successfully launch the vLLM API server and send my first request.
+✅ Successfully launch the vLLM API server and send my first request.
