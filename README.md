@@ -2,7 +2,7 @@
 ai_infra_learning_journey
 
 ````markdown
-```text
+
 ai_infra_learning/
 ├── README.md           # Overall Goals and Progress
 ├── week1/              # Organized by Week
@@ -12,4 +12,4 @@ ai_infra_learning/
 ├── code/               # Scripts, Dockerfiles, etc.
 ├── notes/              # Concept Notes
 └── logs/               # Load testing results, screenshots, etc.
-```
+
