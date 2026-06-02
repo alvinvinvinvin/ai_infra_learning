@@ -1,0 +1,27 @@
+# 模型文件（太大，不能提交到 git）
+qwen2/
+*.bin
+*.safetensors
+*.pt
+*.pth
+
+# Python
+__pycache__/
+*.pyc
+venv*/
+venv310/
+
+# 环境变量
+.env
+
+# 日志文件
+*.log
+logs/benchmarks/*.json
+
+# IDE
+.vscode/
+.idea/
+
+# 临时文件
+tmp/
+temp/
