@@ -1,0 +1,8 @@
+[2026-06-03 12:15:40] FlashInfer still incompatible with SM 12.0
+Error: RuntimeError: FlashInfer requires GPUs with sm75 or higher
+
+Solution: Use OpenAI-compatible entrypoint instead of default API server.
+Command: python -m vllm.entrypoints.openai.api_server --model /home/cheer/qwen2
+
+Root cause: vLLM 0.22.0 default entrypoint ignores VLLM_USE_FLASHINFER_SAMPLER=0,
+but OpenAI entrypoint respects it and falls back to PyTorch-native sampler.
