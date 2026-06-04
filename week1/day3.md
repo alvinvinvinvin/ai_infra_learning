@@ -70,3 +70,48 @@ Try GPTQ quantization for comparison
 Explore other model families (Phi-3, Mistral)
 
 Set up simple RAG pipeline
+
+## Understanding `--max-num-seqs` and the "Maximum Concurrency" Log
+
+While tuning today, we saw this log line:
+Maximum concurrency for 32,768 tokens per request: 6.77x
+
+This caused confusion: does it mean we should set `--max-num-seqs` to ≤ 6? No.
+
+### What does the log value mean?
+
+It represents a **worst‑case theoretical limit** assuming **every request uses the full context length** (`max_model_len=32768`). In that extreme scenario, the KV cache can hold only ~6.77 requests simultaneously.
+
+### Why can we set `--max-num-seqs` much higher (e.g., 128 or 256)?
+
+Because real requests are usually **short**. For example:
+- A typical prompt + completion uses only ~100 tokens.
+- Per‑request KV cache consumption is ~100/32768 ≈ 0.3% of the worst‑case size.
+- Therefore, the same GPU memory can comfortably handle hundreds of concurrent short requests.
+
+### What determines the maximum concurrency calculation?
+
+vLLM computes it as:
+KV Cache total size (allocated from GPU memory by gpu_memory_utilization)
+──────────────────────────────────────────────────────────────────────────
+KV Cache per request (based on max_model_len and model architecture)
+
+This is a **static safety estimate**, not a runtime limit.
+
+### How should you set `--max-num-seqs` for real workloads?
+
+1. **Start high** (e.g., 128 or 256) – the default is fine.
+2. **Run your real workload** while monitoring GPU memory (`nvidia-smi`) and vLLM logs.
+3. **If you see OOM or preemption warnings**, reduce `--max-num-seqs`.
+4. **If memory is under‑utilized**, increase `--max-num-seqs` to boost throughput.
+
+For short‑text experiments like ours, a high value (128‑256) is safe and provides good throughput. The log's "6.77x" is a **worst‑case reference**, not a hard cap.
+
+### Summary
+
+| Concept | Meaning | Practical use |
+|---------|---------|----------------|
+| `Maximum concurrency` (log) | Worst‑case concurrency if every request fills `max_model_len` | Reference for extreme upper bound |
+| `--max-num-seqs` (CLI) | User‑defined limit on concurrently processing sequences | Tune based on actual request lengths and GPU memory |
+
+**Key takeaway**: Don't be misled by the low log value. For short requests you can safely set `--max-num-seqs` to 128 or higher.
