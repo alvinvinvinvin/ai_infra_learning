@@ -1,33 +1,48 @@
-# Session Recovery Info
 
-## Last Updated
-June 4, 2026 - End of Day 3
+Session Recovery Info
+Last Updated
+June 5, 2026 - End of Day 4
 
-## Current Status
-- vLLM 0.22.0 running with AWQ quantized Qwen2-1.5B (awq_marlin backend)
-- Model: ./qwen2-awq, quantization: awq_marlin
-- Port: 8000, VLLM_USE_FLASHINFER_SAMPLER=0
-- RTX 5060 Ti (SM 12.0) with PyTorch CUDA 13.0
+Current Status
+vLLM 0.22.0 currently serving GPTQ model (or can switch)
 
-## Completed
-- [x] Day 1: Environment setup, vLLM deployment, local + cross-node inference
-- [x] Day 2: OpenAI API, sampling parameters, performance benchmarks
-- [x] Day 3: Quantization (AWQ), model comparison, latency and memory gains
+Models available: Qwen2-1.5B (FP16, AWQ, GPTQ)
 
-## Key Metrics (AWQ vs FP16)
-- Memory: 9.5 GB vs 12.9 GB (26% reduction)
-- Latency (50 tokens): 0.23 s vs 1.0 s (4.3x faster)
+RTX 5060 Ti (SM 12.0) with PyTorch CUDA 13.0
 
-## Next (Day 4)
-- [ ] Try GPTQ quantization
-- [ ] Experiment with other models (Phi-3, Mistral)
-- [ ] Build a simple RAG pipeline
+Completed
+Day 1: Environment setup, vLLM deployment, cross-node inference
 
-## Quick Recovery
-```bash
+Day 2: OpenAI API, sampling parameters, performance benchmarks
+
+Day 3: Quantization with AWQ, 4.3x speedup, 26% memory reduction
+
+Day 4: GPTQ quantization, comparison with AWQ (similar performance)
+
+Performance Summary
+Model	Latency (50 tokens)	Memory	Notes
+FP16	~1.0 s	12.9 GB	Baseline
+AWQ	~0.23 s	9.5 GB	4.3x faster
+GPTQ	~0.23 s	9.6 GB	Similar to AWQ
+Next (Day 5)
+RAG pipeline (document loading, vector store, retrieval)
+
+Or try larger model (e.g., Phi-3-mini)
+
+Set up monitoring (Prometheus + Grafana)
+
+Quick Recovery (GPTQ)
+
 cd ~/ai_infra_learning
 source venv310/bin/activate
 export VLLM_USE_FLASHINFER_SAMPLER=0
+python -m vllm.entrypoints.openai.api_server \
+  --model ./qwen2-gptq \
+  --quantization gptq \
+  --gpu-memory-utilization 0.5
+
+Quick Recovery (AWQ)
+
 python -m vllm.entrypoints.openai.api_server \
   --model ./qwen2-awq \
   --quantization awq_marlin \
