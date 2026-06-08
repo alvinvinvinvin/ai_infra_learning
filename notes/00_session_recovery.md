@@ -1,49 +1,47 @@
+# Session Recovery Info
 
-Session Recovery Info
-Last Updated
-June 5, 2026 - End of Day 4
+## Last Updated
+June 8, 2026 - End of Day 5
 
-Current Status
-vLLM 0.22.0 currently serving GPTQ model (or can switch)
+## Current Status
+- vLLM 0.22.0 serving AWQ quantized Qwen2-1.5B
+- RAG pipeline working with ChromaDB + sentence-transformers
+- Models available: FP16, AWQ, GPTQ (Qwen2-1.5B)
 
-Models available: Qwen2-1.5B (FP16, AWQ, GPTQ)
+## Completed
+- [x] Day 1: Environment setup, vLLM deployment, cross-node inference
+- [x] Day 2: OpenAI API, sampling parameters, performance benchmarks
+- [x] Day 3: AWQ quantization, 4.3x speedup, 26% memory reduction
+- [x] Day 4: GPTQ quantization, comparison with AWQ
+- [x] Day 5: RAG pipeline (Chroma + embeddings + vLLM)
 
-RTX 5060 Ti (SM 12.0) with PyTorch CUDA 13.0
+## RAG Demo
+```bash
+cd ~/ai_infra_learning
+source venv310/bin/activate
+python code/scripts/rag_demo.py
 
-Completed
-Day 1: Environment setup, vLLM deployment, cross-node inference
+Known Limitations
+Model doesn't strictly follow "answer only from context" instruction
 
-Day 2: OpenAI API, sampling parameters, performance benchmarks
+Small model (1.5B) has weaker instruction following
 
-Day 3: Quantization with AWQ, 4.3x speedup, 26% memory reduction
+No retrieval confidence threshold yet
 
-Day 4: GPTQ quantization, comparison with AWQ (similar performance)
+Next (Day 6)
+Improve RAG: confidence filtering, better prompts
 
-Performance Summary
-Model	Latency (50 tokens)	Memory	Notes
-FP16	~1.0 s	12.9 GB	Baseline
-AWQ	~0.23 s	9.5 GB	4.3x faster
-GPTQ	~0.23 s	9.6 GB	Similar to AWQ
-Next (Day 5)
-RAG pipeline (document loading, vector store, retrieval)
-
-Or try larger model (e.g., Phi-3-mini)
+Test with larger model (Phi-3-mini)
 
 Set up monitoring (Prometheus + Grafana)
 
-Quick Recovery (GPTQ)
+Quick Recovery
 
 cd ~/ai_infra_learning
 source venv310/bin/activate
 export VLLM_USE_FLASHINFER_SAMPLER=0
 python -m vllm.entrypoints.openai.api_server \
-  --model ./qwen2-gptq \
-  --quantization gptq \
-  --gpu-memory-utilization 0.5
-
-Quick Recovery (AWQ)
-
-python -m vllm.entrypoints.openai.api_server \
   --model ./qwen2-awq \
   --quantization awq_marlin \
   --gpu-memory-utilization 0.5
+
