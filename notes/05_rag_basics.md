@@ -103,3 +103,15 @@ LLM decides which tools/databases to query, can combine multiple sources.
 - [LangChain RAG Tutorial](https://python.langchain.com/docs/tutorials/rag/)
 - [RAGatouille](https://github.com/bclavie/RAGatouille) (ColBERT reranking)
 - [LlamaIndex](https://www.llamaindex.ai/) (Alternative RAG framework)
+
+Appendix: RAG vs Quantization (GPTQ/AWQ)
+These concepts are often confused. Here's the distinction:
+
+Quantization (GPTQ/AWQ)	RAG
+What it does	Compresses model weights (FP16 → INT4)	Retrieves external documents as context
+Why use it	Smaller memory, faster inference	More accurate, less hallucination, private knowledge
+When to apply	Model loading time	Every request (runtime)
+Changes model?	Yes (permanently compressed)	No (only changes input)
+They work together: Your rag_demo.py uses a quantized model (./qwen2-awq) inside a RAG pipeline.
+
+For a detailed comparison, see notes/06_quantization_vs_rag.md.
