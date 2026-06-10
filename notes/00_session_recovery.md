@@ -1,39 +1,45 @@
-# Session Recovery Info
 
-## Last Updated
-June 8, 2026 - End of Day 5
+Session Recovery Info
+Last Updated
+June 9, 2026 - End of Day 6
 
-## Current Status
-- vLLM 0.22.0 serving AWQ quantized Qwen2-1.5B
-- RAG pipeline working with ChromaDB + sentence-transformers
-- Models available: FP16, AWQ, GPTQ (Qwen2-1.5B)
+Current Status
+vLLM 0.22.0 serving Phi-3-mini (3.8B) on port 8000
 
-## Completed
-- [x] Day 1: Environment setup, vLLM deployment, cross-node inference
-- [x] Day 2: OpenAI API, sampling parameters, performance benchmarks
-- [x] Day 3: AWQ quantization, 4.3x speedup, 26% memory reduction
-- [x] Day 4: GPTQ quantization, comparison with AWQ
-- [x] Day 5: RAG pipeline (Chroma + embeddings + vLLM)
+RAG pipeline optimized with similarity threshold + improved prompt
 
-## RAG Demo
-```bash
-cd ~/ai_infra_learning
-source venv310/bin/activate
-python code/scripts/rag_demo.py
+Embedding model: all-MiniLM-L6-v2 (384-dim)
 
-Known Limitations
-Model doesn't strictly follow "answer only from context" instruction
+Similarity threshold: 1.2
 
-Small model (1.5B) has weaker instruction following
+Completed
+Day 1: vLLM deployment, environment setup
 
-No retrieval confidence threshold yet
+Day 2: OpenAI API, sampling parameters
 
-Next (Day 6)
-Improve RAG: confidence filtering, better prompts
+Day 3: AWQ quantization
 
-Test with larger model (Phi-3-mini)
+Day 4: GPTQ quantization comparison
 
+Day 5: RAG pipeline (Chroma + embeddings + vLLM)
+
+Day 6: RAG optimization (threshold, prompt, Phi-3-mini, understanding embedding distance & dimensions)
+
+Key Learnings
+Phi-3-mini follows instructions much better than Qwen2-1.5B
+
+L2 distance measures semantic similarity (smaller = more similar)
+
+384-dim vectors come from 12 attention heads × 32 dim/head
+
+Embedding model and LLM serve different roles in RAG
+
+Next (Day 7)
 Set up monitoring (Prometheus + Grafana)
+
+Containerization (Docker)
+
+Or continue RAG enhancements
 
 Quick Recovery
 
@@ -41,7 +47,6 @@ cd ~/ai_infra_learning
 source venv310/bin/activate
 export VLLM_USE_FLASHINFER_SAMPLER=0
 python -m vllm.entrypoints.openai.api_server \
-  --model ./qwen2-awq \
-  --quantization awq_marlin \
-  --gpu-memory-utilization 0.5
-
+  --model ./phi3-mini \
+  --trust-remote-code \
+  --gpu-memory-utilization 0.7
