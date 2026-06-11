@@ -1,16 +1,16 @@
 
 Session Recovery Info
 Last Updated
-June 9, 2026 - End of Day 6
+June 10, 2026 - End of Day 7
 
 Current Status
-vLLM 0.22.0 serving Phi-3-mini (3.8B) on port 8000
+vLLM 0.22.0 serving Phi-3-mini on port 8000
 
-RAG pipeline optimized with similarity threshold + improved prompt
+Prometheus scraping metrics every 15s (port 9090)
 
-Embedding model: all-MiniLM-L6-v2 (384-dim)
+Grafana dashboard available at http://localhost:3000
 
-Similarity threshold: 1.2
+Dashboard ID 19195 imported and showing real-time metrics
 
 Completed
 Day 1: vLLM deployment, environment setup
@@ -21,32 +21,33 @@ Day 3: AWQ quantization
 
 Day 4: GPTQ quantization comparison
 
-Day 5: RAG pipeline (Chroma + embeddings + vLLM)
+Day 5: RAG pipeline (Chroma + embeddings)
 
-Day 6: RAG optimization (threshold, prompt, Phi-3-mini, understanding embedding distance & dimensions)
+Day 6: RAG optimization (threshold, Phi-3-mini, embedding dimensions)
 
-Key Learnings
-Phi-3-mini follows instructions much better than Qwen2-1.5B
-
-L2 distance measures semantic similarity (smaller = more similar)
-
-384-dim vectors come from 12 attention heads × 32 dim/head
-
-Embedding model and LLM serve different roles in RAG
-
-Next (Day 7)
-Set up monitoring (Prometheus + Grafana)
-
-Containerization (Docker)
-
-Or continue RAG enhancements
+Day 7: Monitoring with Prometheus + Grafana
 
 Quick Recovery
 
+# Start vLLM
 cd ~/ai_infra_learning
 source venv310/bin/activate
 export VLLM_USE_FLASHINFER_SAMPLER=0
 python -m vllm.entrypoints.openai.api_server \
   --model ./phi3-mini \
   --trust-remote-code \
-  --gpu-memory-utilization 0.7
+  --gpu-memory-utilization 0.7 \
+  --port 8000
+
+# Start Prometheus (if not running)
+cd /opt/prometheus
+nohup ./prometheus --config.file=prometheus.yml --web.listen-address=:9090 > prometheus.log 2>&1 &
+
+# Grafana should auto-start; if not:
+# sudo systemctl start grafana-server
+Next (Day 8)
+Containerization with Docker
+
+Kubernetes deployment (K3s)
+
+Grafana alerting setup
