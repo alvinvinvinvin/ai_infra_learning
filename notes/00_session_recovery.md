@@ -1,16 +1,16 @@
 
 Session Recovery Info
 Last Updated
-June 10, 2026 - End of Day 7
+June 11, 2026 - End of Day 8
 
 Current Status
-vLLM 0.22.0 serving Phi-3-mini on port 8000
+Docker image alvinchen8611/ai-infra-learning:cpu built and pushed
 
-Prometheus scraping metrics every 15s (port 9090)
+K3s cluster running with ai-inference namespace
 
-Grafana dashboard available at http://localhost:3000
+nginx test deployment verified working
 
-Dashboard ID 19195 imported and showing real-time metrics
+vLLM not running due to CPU mode compatibility issue
 
 Completed
 Day 1: vLLM deployment, environment setup
@@ -21,33 +21,40 @@ Day 3: AWQ quantization
 
 Day 4: GPTQ quantization comparison
 
-Day 5: RAG pipeline (Chroma + embeddings)
+Day 5: RAG pipeline with Chroma
 
-Day 6: RAG optimization (threshold, Phi-3-mini, embedding dimensions)
+Day 6: RAG optimization, embedding dimensions
 
-Day 7: Monitoring with Prometheus + Grafana
+Day 7: Prometheus + Grafana monitoring
+
+Day 8: Docker containerization + K8s deployment
+
+Key Skills Acquired
+Dockerfile authoring and image building
+
+Docker Hub image registry operations
+
+Kubernetes Deployment and Service management
+
+K8s troubleshooting (logs, describe, events)
+
+Node selection and environment configuration
+
+Next (Day 9)
+K8s rolling updates
+
+ConfigMaps and Secrets
+
+Ingress controllers
+
+Persistent volumes
 
 Quick Recovery
 
-# Start vLLM
-cd ~/ai_infra_learning
-source venv310/bin/activate
-export VLLM_USE_FLASHINFER_SAMPLER=0
-python -m vllm.entrypoints.openai.api_server \
-  --model ./phi3-mini \
-  --trust-remote-code \
-  --gpu-memory-utilization 0.7 \
-  --port 8000
+# Check K3s cluster
+kubectl get nodes
+kubectl get pods -n ai-inference
 
-# Start Prometheus (if not running)
-cd /opt/prometheus
-nohup ./prometheus --config.file=prometheus.yml --web.listen-address=:9090 > prometheus.log 2>&1 &
-
-# Grafana should auto-start; if not:
-# sudo systemctl start grafana-server
-Next (Day 8)
-Containerization with Docker
-
-Kubernetes deployment (K3s)
-
-Grafana alerting setup
+# Test with nginx (works)
+kubectl port-forward -n ai-inference svc/nginx-service 8080:80
+curl http://localhost:8080
